@@ -17,11 +17,18 @@ contract Lottery {
     }
 
     function pickWinner() public{
+        // Only the creator of the contract
+        // can pick a winner.
+        require(msg.sender == manager);
+
         // Psudo random
         uint index = random() % players.length;
 
         // Address has transfer function (in wei)
         players[index].transfer(this.balance);
+
+        // Clear array
+        players = new address[](0);
     }
 
     function random() private view returns (uint) {
