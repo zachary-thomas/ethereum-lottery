@@ -17,7 +17,11 @@ contract Lottery {
     }
 
     function pickWinner() public{
+        // Psudo random
         uint index = random() % players.length;
+
+        // Address has transfer function (in wei)
+        players[index].transfer(this.balance);
     }
 
     function random() private view returns (uint) {
