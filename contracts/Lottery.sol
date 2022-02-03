@@ -16,11 +16,7 @@ contract Lottery {
         players.push(msg.sender);
     }
 
-    function pickWinner() public{
-        // Only the creator of the contract
-        // can pick a winner.
-        require(msg.sender == manager);
-
+    function pickWinner() public restricted{
         // Psudo random
         uint index = random() % players.length;
 
@@ -31,8 +27,24 @@ contract Lottery {
         players = new address[](0);
     }
 
+    // View does not modify data in contract
+    function getPlayers() public view returns (address[]){
+        return players;
+    }
+
     function random() private view returns (uint) {
         // Turns hash into unsigned number to return
         return uint(keccak256(block.difficulty, now, players));
     }
+
+    modifier restricted(){
+        // Only the creator of the contract
+        // can pick a winner.
+        require(msg.sender == manager);
+
+        // Underscore is like a target where
+        // code is inserted.
+        _;
+    }
+    
 }
