@@ -8,6 +8,10 @@ contract Lottery {
         manager = msg.sender;
     }
 
+    function getCount() public view returns(uint) {
+        return players.length;
+    }
+
     function enter() public payable{
         // Stops to see if the function should continue
         // In this case we want ether sent, by default it is

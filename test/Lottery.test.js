@@ -95,4 +95,29 @@ describe('Lottery Contract', () => {
         }
     });
 
+    it('sends money to winner and resets the players array', async() => {
+        await lottery.methods.enter().send({
+            from: accounts[0],
+            value: web3.utils.toWei('2', 'ether')
+        });
+
+        // Returns ammount of wei owned by account
+        const initialBalance = await web3.eth.getBalance(accounts[0]);
+        
+        await lottery.methods.pickWinner().send({from: accounts[0]});
+
+        const finalBalance = await web3.eth.getBalance(accounts[0]);
+
+        const difference = finalBalance - initialBalance;
+
+        const lengthOfArray = await lottery.methods.getCount().call({
+            from: accounts[0]
+        });
+
+        // Will be slightly less than 2 ether
+        assert(difference > web3.utils.toWei('1.8', 'ether'))
+        assert(await web3.eth.getBalance(lottery.options.address) == 0);
+        assert(lengthOfArray == 0)
+    });
+
 });
